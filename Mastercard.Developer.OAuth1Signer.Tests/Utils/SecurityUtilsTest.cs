@@ -21,7 +21,7 @@ namespace Mastercard.Developer.OAuth1Signer.Tests.Utils
 
             // THEN
             Assert.AreEqual(2048, privateKey.KeySize);
-            Assert.AreEqual("RSA", privateKey.KeyExchangeAlgorithm);
+            Assert.AreEqual("RSA-PKCS1-KeyEx", privateKey.KeyExchangeAlgorithm);
         }
     }
 }

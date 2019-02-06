@@ -2,7 +2,7 @@
 using Mastercard.Developer.OAuth1Signer.RestSharp.Signers;
 using Mastercard.Developer.OAuth1Signer.Tests.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RestSharp.Portable;
+using RestSharp;
 
 namespace Mastercard.Developer.OAuth1Signer.Tests.Signers
 {
@@ -28,8 +28,8 @@ namespace Mastercard.Developer.OAuth1Signer.Tests.Signers
             instanceUnderTest.Sign(baseUri, request);
 
             // THEN
-            var authorizationHeaders = request.Parameters.Find(ParameterType.HttpHeader, "Authorization");
-            var authorizationHeaderValue = authorizationHeaders[0].Value as string;
+            var authorizationHeader = request.Parameters.Find(p => p.Name.Equals("Authorization"));
+            var authorizationHeaderValue = authorizationHeader.Value as string;
             Assert.IsNotNull(authorizationHeaderValue);
         }
     }

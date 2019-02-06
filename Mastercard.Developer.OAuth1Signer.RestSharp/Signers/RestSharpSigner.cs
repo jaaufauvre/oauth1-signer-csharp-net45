@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Mastercard.Developer.OAuth1Signer.Core;
 using Mastercard.Developer.OAuth1Signer.Core.Signers;
-using RestSharp.Portable;
+using RestSharp;
 #pragma warning disable 1591
 
 namespace Mastercard.Developer.OAuth1Signer.RestSharp.Signers
@@ -14,11 +14,11 @@ namespace Mastercard.Developer.OAuth1Signer.RestSharp.Signers
     /// </summary>
     public sealed class RestSharpSigner : BaseSigner
     {
-        public RestSharpSigner(string consumerKey, RSA signingKey) : base(consumerKey, signingKey)
+        public RestSharpSigner(string consumerKey, RSACryptoServiceProvider signingKey) : base(consumerKey, signingKey)
         {
         }
 
-        public RestSharpSigner(string consumerKey, RSA signingKey, Encoding encoding) : base(consumerKey, signingKey, encoding)
+        public RestSharpSigner(string consumerKey, RSACryptoServiceProvider signingKey, Encoding encoding) : base(consumerKey, signingKey, encoding)
         {
         }
 
@@ -59,7 +59,7 @@ namespace Mastercard.Developer.OAuth1Signer.RestSharp.Signers
             // Generate the header and add it to the request
             var methodString = request.Method.ToString();
             var header = OAuth.GetAuthorizationHeader(fullUri.ToString(), methodString, payload, Encoding, ConsumerKey, SigningKey);
-            request.AddOrUpdateHeader(OAuth.AuthorizationHeaderName, header);
+            request.AddHeader(OAuth.AuthorizationHeaderName, header);
         }
     }
 }

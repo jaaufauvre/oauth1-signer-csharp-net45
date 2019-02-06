@@ -13,11 +13,12 @@ namespace Mastercard.Developer.OAuth1Signer.Core
     public static class OAuth
     {
         public const string AuthorizationHeaderName = "Authorization";
+        private const string Sha256Oid = "2.16.840.1.101.3.4.2.1";
 
         /// <summary>
         /// Creates a Mastercard API compliant OAuth Authorization header.
         /// </summary>
-        public static string GetAuthorizationHeader(string uri, string method, string payload, Encoding encoding, string consumerKey, RSA signingKey)
+        public static string GetAuthorizationHeader(string uri, string method, string payload, Encoding encoding, string consumerKey, RSACryptoServiceProvider signingKey)
         {
             if (uri == null) throw new ArgumentNullException(nameof(uri));
             if (method == null) throw new ArgumentNullException(nameof(method));
@@ -173,10 +174,10 @@ namespace Mastercard.Developer.OAuth1Signer.Core
         /// https://tools.ietf.org/html/rfc5849#section-3.4.3 but Mastercard uses the stronger SHA-256 algorithm
         /// as a replacement for the described SHA1 which is no longer considered secure.
         /// </summary>
-        internal static string SignSignatureBaseString(string baseString, Encoding encoding, RSA privateKey)
+        internal static string SignSignatureBaseString(string baseString, Encoding encoding, RSACryptoServiceProvider privateKey)
         {
             var hash = Sha256Digest(baseString, encoding);
-            var signedHashValue = privateKey.SignHash(hash, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            var signedHashValue = privateKey.SignHash(hash, Sha256Oid);
             return Convert.ToBase64String(signedHashValue);
         }
         

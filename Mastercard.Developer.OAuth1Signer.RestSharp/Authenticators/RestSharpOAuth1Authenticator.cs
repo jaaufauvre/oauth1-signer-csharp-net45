@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Net;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 using Mastercard.Developer.OAuth1Signer.RestSharp.Signers;
-using RestSharp.Portable;
+using RestSharp;
 #pragma warning disable 1591
 
 namespace Mastercard.Developer.OAuth1Signer.RestSharp.Authenticators
@@ -17,23 +15,12 @@ namespace Mastercard.Developer.OAuth1Signer.RestSharp.Authenticators
         private Uri BaseUri { get; }
         private RestSharpSigner Signer { get; }
 
-        public RestSharpOAuth1Authenticator(string consumerKey, RSA signingKey, Uri baseUri)
+        public RestSharpOAuth1Authenticator(string consumerKey, RSACryptoServiceProvider signingKey, Uri baseUri)
         {
             BaseUri = baseUri ?? throw new ArgumentNullException(nameof(baseUri));
             Signer = new RestSharpSigner(consumerKey, signingKey);
         }
 
-        public Task PreAuthenticate(IRestClient client, IRestRequest restRequest, ICredentials credentials) => Task.Run(() => Signer.Sign(BaseUri, restRequest));
-
-        public bool CanPreAuthenticate(IRestClient client, IRestRequest request, ICredentials credentials) => true;
-
-        public bool CanPreAuthenticate(IHttpClient client, IHttpRequestMessage request, ICredentials credentials) => false;
-
-        public bool CanHandleChallenge(IHttpClient client, IHttpRequestMessage request, ICredentials credentials, IHttpResponseMessage response) => false;
-
-        public Task PreAuthenticate(IHttpClient client, IHttpRequestMessage request, ICredentials credentials) => throw new NotImplementedException();
-
-        public Task HandleChallenge(IHttpClient client, IHttpRequestMessage request, ICredentials credentials, IHttpResponseMessage response) => throw new NotImplementedException();
-
+        public void Authenticate(IRestClient client, IRestRequest restRequest) => Signer.Sign(BaseUri, restRequest);
     }
 }
