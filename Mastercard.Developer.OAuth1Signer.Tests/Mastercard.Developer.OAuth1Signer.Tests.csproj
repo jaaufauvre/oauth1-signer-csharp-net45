@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="OAuthTest.cs" />
+    <Compile Include="Authenticators\RestSharpOAuth1AuthenticatorTest.cs" />
     <Compile Include="Signers\RestSharpSignerTest.cs" />
     <Compile Include="Test\TestUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

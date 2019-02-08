@@ -21,6 +21,6 @@ namespace Mastercard.Developer.OAuth1Signer.RestSharp.Authenticators
             Signer = new RestSharpSigner(consumerKey, signingKey);
         }
 
-        public void Authenticate(IRestClient client, IRestRequest restRequest) => Signer.Sign(BaseUri, restRequest);
+        public void Authenticate(IRestClient client, IRestRequest request) => Signer.Sign(BaseUri, request);
     }
 }
