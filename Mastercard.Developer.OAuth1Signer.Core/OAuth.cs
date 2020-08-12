@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Mastercard.Developer.OAuth1Signer.Core.Utils;
+using System.Runtime.CompilerServices;
 #pragma warning disable 1591
 
 namespace Mastercard.Developer.OAuth1Signer.Core
@@ -13,6 +15,7 @@ namespace Mastercard.Developer.OAuth1Signer.Core
     public static class OAuth
     {
         public const string AuthorizationHeaderName = "Authorization";
+        private static readonly Random Random = new Random();
         private const string Sha256Oid = "2.16.840.1.101.3.4.2.1";
 
         /// <summary>
@@ -70,8 +73,11 @@ namespace Mastercard.Developer.OAuth1Signer.Core
                 return queryParamCollection;
             }
 
-            var queryParameterString = uri.Substring(beginIndex);
-            var queryParams = queryParameterString.Split('&', '?');
+            var rawQueryString = uri.Substring(beginIndex);
+            var decodedQueryString = Uri.UnescapeDataString(rawQueryString);
+            bool mustEncode = !decodedQueryString.Equals(rawQueryString);
+
+            var queryParams = rawQueryString.Split('&', '?');
             foreach (var queryParam in queryParams)
             {
                 if (string.IsNullOrEmpty(queryParam))
@@ -82,8 +88,8 @@ namespace Mastercard.Developer.OAuth1Signer.Core
                 var separatorIndex = queryParam.IndexOf('=');
                 var key = separatorIndex < 0 ? queryParam : Uri.UnescapeDataString(queryParam.Substring(0, separatorIndex));
                 var value = separatorIndex < 0 ? string.Empty : Uri.UnescapeDataString(queryParam.Substring(separatorIndex + 1));
-                var encodedKey = ToUriRfc3986(key);
-                var encodedValue = ToUriRfc3986(value);
+                var encodedKey = mustEncode ? ToUriRfc3986(key) : key;
+                var encodedValue = mustEncode ? ToUriRfc3986(value) : value;
 
                 if (!queryParamCollection.ContainsKey(encodedKey))
                 {
@@ -211,9 +217,9 @@ namespace Mastercard.Developer.OAuth1Signer.Core
         }
 
         /// <summary>
-        /// Generates a random string for replay protection as per https://tools.ietf.org/html/rfc5849#section-3.3.
+        /// Generates a 16 char random string for replay protection as per https://tools.ietf.org/html/rfc5849#section-3.3.
         /// </summary>
-        internal static string GetNonce() => Guid.NewGuid().ToString().Replace("-", string.Empty);
+        internal static string GetNonce() => string.Concat(Enumerable.Range(0, 16).Select(_ => Random.Next(16).ToString("x")));
 
         /// <summary>
         /// Returns UNIX Timestamp as required per https://tools.ietf.org/html/rfc5849#section-3.3.

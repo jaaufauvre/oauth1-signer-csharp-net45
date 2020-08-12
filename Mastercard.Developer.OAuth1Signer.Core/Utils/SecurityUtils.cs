@@ -8,6 +8,7 @@ namespace Mastercard.Developer.OAuth1Signer.Core.Utils
     /// <summary>
     /// Utility class.
     /// </summary>
+    [Obsolete("Use AuthenticationUtils instead.")]
     public static class SecurityUtils
     {
         /// <summary>
@@ -16,13 +17,7 @@ namespace Mastercard.Developer.OAuth1Signer.Core.Utils
         public static RSACryptoServiceProvider LoadPrivateKey(string pkcs12KeyFilePath, string signingKeyAlias, string signingKeyPassword, 
             X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.Exportable)
         {
-            if (pkcs12KeyFilePath == null) throw new ArgumentNullException(nameof(pkcs12KeyFilePath));
-            var signingCertificate = new X509Certificate2(pkcs12KeyFilePath, signingKeyPassword, keyStorageFlags);
-            RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)signingCertificate.PrivateKey;
-            byte[] privateKeyBlob = rsa.ExportCspBlob(true);
-            var key = new RSACryptoServiceProvider();
-            key.ImportCspBlob(privateKeyBlob);
-            return key;
+            return AuthenticationUtils.LoadSigningKey(pkcs12KeyFilePath, signingKeyAlias, signingKeyPassword, keyStorageFlags);
         }
     }
 }

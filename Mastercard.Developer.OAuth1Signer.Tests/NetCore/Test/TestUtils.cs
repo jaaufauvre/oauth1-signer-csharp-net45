@@ -2,11 +2,13 @@
 using System.Security.Cryptography.X509Certificates;
 using Mastercard.Developer.OAuth1Signer.Core.Utils;
 
-namespace Mastercard.Developer.OAuth1Signer.Tests.Test
+// ReSharper disable InconsistentNaming
+
+namespace Mastercard.Developer.OAuth1Signer.Tests.NetCore.Test
 {
     internal static class TestUtils
     {
-        internal static RSACryptoServiceProvider GetTestPrivateKey() => SecurityUtils.LoadPrivateKey(
+        internal static RSACryptoServiceProvider GetTestSigningKey() => AuthenticationUtils.LoadSigningKey(
             "./_Resources/test_key_container.p12", 
             "mykeyalias", 
             "Password1",

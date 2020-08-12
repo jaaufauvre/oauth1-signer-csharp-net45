@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Text;
 using Mastercard.Developer.OAuth1Signer.RestSharp.Signers;
-using Mastercard.Developer.OAuth1Signer.Tests.Test;
+using Mastercard.Developer.OAuth1Signer.Tests.NetCore.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RestSharp;
 
-namespace Mastercard.Developer.OAuth1Signer.Tests.Signers
+namespace Mastercard.Developer.OAuth1Signer.Tests.NetCore.Signers
 {
     [TestClass]
     public class RestSharpSignerTest
@@ -13,20 +14,21 @@ namespace Mastercard.Developer.OAuth1Signer.Tests.Signers
         public void TestSign_ShouldAddOAuth1HeaderToPostRequest()
         {
             // GIVEN
-            var signingKey = TestUtils.GetTestPrivateKey();
+            var signingKey = TestUtils.GetTestSigningKey();
             const string consumerKey = "Some key";
             var baseUri = new Uri("https://api.mastercard.com/");
             var request = new RestRequest
             {
                 Method = Method.POST,
-                Resource = "/service",
+                Resource = "/service/{param1}",
                 Parameters =
                 {
-                    new Parameter { Type = ParameterType.QueryString, Name = "param1", Value = "with spaces" },
-                    new Parameter { Type = ParameterType.QueryString, Name = "param2", Value = "encoded#symbol" }
+                    new Parameter { Type = ParameterType.UrlSegment, Name = "param1", Value = "value" },
+                    new Parameter { Type = ParameterType.QueryString, Name = "param2", Value = "with spaces" },
+                    new Parameter { Type = ParameterType.QueryString, Name = "param3", Value = "encoded#symbol" },
+                    new Parameter { Type = ParameterType.RequestBody, Name = "RequestBody", Value = "{\"foo\":\"bår\"}" }
                 }
             };
-            request.AddJsonBody("{\"foo\":\"bår\"}"); // "application/json; charset=utf-8"
 
             // WHEN
             var instanceUnderTest = new RestSharpSigner(consumerKey, signingKey);
@@ -42,7 +44,7 @@ namespace Mastercard.Developer.OAuth1Signer.Tests.Signers
         public void TestSign_ShouldAddOAuth1HeaderToGetRequest()
         {
             // GIVEN
-            var signingKey = TestUtils.GetTestPrivateKey();
+            var signingKey = TestUtils.GetTestSigningKey();
             const string consumerKey = "Some key";
             var baseUri = new Uri("https://api.mastercard.com/");
             var request = new RestRequest

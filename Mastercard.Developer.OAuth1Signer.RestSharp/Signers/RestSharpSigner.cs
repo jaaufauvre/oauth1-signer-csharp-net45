@@ -38,19 +38,25 @@ namespace Mastercard.Developer.OAuth1Signer.RestSharp.Signers
                 fullUri.Append("/").Append(resource);
             }
 
+            // Add query params
             var parameterString = new StringBuilder();
             foreach (var requestParameter in request.Parameters.Where(p => p.Type == ParameterType.QueryString))
             {
                 parameterString
                     .Append(parameterString.Length > 0 ? "&" : string.Empty)
-                    .Append(requestParameter.Name)
+                    .Append(Uri.EscapeDataString(requestParameter.Name))
                     .Append("=")
-                    .Append(requestParameter.Value);
+                    .Append(Uri.EscapeDataString(requestParameter.Value as string));
             }
             if (parameterString.Length > 0)
             {
                 fullUri.Append("?").Append(parameterString);
             }
+
+            // Fix URL segments
+            fullUri = request.Parameters
+                .Where(p => p.Type == ParameterType.UrlSegment)
+                .Aggregate(fullUri, (current, requestParameter) => current.Replace($"{{{requestParameter.Name}}}", requestParameter.Value.ToString()));
 
             // Read the body
             var bodyParam = request.Parameters.FirstOrDefault(param => param.Type == ParameterType.RequestBody);

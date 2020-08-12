@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: InternalsVisibleTo("Mastercard.Developer.OAuth1Signer.Tests.Net4x, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b50e085c4583209974a6a902505c534b21b205b9e627c583beea690b541d67fdfe8dc53e50c6a0653f0e3e7828d75432a50df4c4b5348ca4e662e42af603cc97636fb2393ef995babf19bc51644c30296a3edf0afd0182cfc21d0c836da5af922e3631a52a2dc5ed2edc8c568f41ff3d41c82fbe27e6bf4fe4df3e50568b65c8")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
