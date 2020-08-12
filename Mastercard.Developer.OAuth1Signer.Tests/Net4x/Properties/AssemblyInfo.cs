@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Mastercard")]
 [assembly: AssemblyProduct("Mastercard.Developer.OAuth1Signer.Tests.Net4x")]
-[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
